@@ -1,0 +1,41 @@
+project:
+  type: book
+  output-dir: _site
+
+book:
+  title: "Statistical Learning in Python"
+  subtitle: "Theory, implementation, and experiments"
+  author:
+    - name: "Yvan Richard"
+      affiliation: "Independent Researcher"
+      email: "yvan.richard2004@gmail.com"
+  chapters:
+    - index.qmd
+    - chapters/01-introduction.qmd
+    - chapters/02-statistical-learning.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    code-copy: true
+    code-overflow: wrap
+    html-math-method: katex
+
+jupyter: statistical-learning
+
+execute:
+  freeze: auto
+  warning: false
+  error: false
+
+crossref:
+  chapters: true
+

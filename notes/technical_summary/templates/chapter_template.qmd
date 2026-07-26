@@ -1,0 +1,366 @@
+---
+title: "Chapter N: Method Name"
+subtitle: "The question this method answers"
+description: "A short, searchable description of the chapter."
+categories:
+  - supervised-learning
+  - regression
+---
+
+# Summary
+
+::: {.callout-tip}
+## Main result
+
+State the most important conclusion in two or three sentences.
+
+Example: regularization improved test error when predictors were noisy and
+correlated, but the selected coefficients were unstable across bootstrap
+samples.
+:::
+
+## Learning objectives
+
+By the end of this chapter, we should be able to:
+
+- Explain the method intuitively.
+- Derive or interpret its objective function.
+- Identify its principal assumptions.
+- Implement the essential algorithm.
+- Evaluate it against a simple baseline.
+- Recognize situations in which it can fail.
+
+## Problem
+
+State the statistical question before introducing the method.
+
+> Given ..., how can we ...?
+
+Explain:
+
+- The observations
+- The predictors
+- The target
+- The estimand or prediction objective
+- The evaluation metric
+
+## Data
+
+### Provenance
+
+| Item | Description |
+|---|---|
+| Source | Dataset origin and link |
+| Unit of observation | What one row represents |
+| Target | Variable being predicted |
+| Sample size | Number of observations |
+| Important limitations | Selection, missingness, measurement issues |
+
+```{python}
+#| label: imports
+#| code-fold: true
+
+from importlib.metadata import version
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+SEED = 42
+rng = np.random.default_rng(SEED)
+
+sns.set_theme(style="whitegrid", context="notebook")
+```
+
+```{python}
+#| label: load-data
+
+# Load through a reusable project function when possible:
+# from statlearn.data import load_example
+# data = load_example()
+```
+
+### Initial inspection
+
+```{python}
+#| label: tbl-data-summary
+#| tbl-cap: "Summary of the variables used in the experiment"
+
+# Return a small, relevant summary table.
+# Avoid displaying dozens of raw rows.
+```
+
+Describe what the inspection revealed. Do not leave interpretation entirely to
+the charts.
+
+## Statistical idea
+
+### Intuition
+
+Explain the model without notation first.
+
+A useful structure is:
+
+1. What the method is allowed to learn.
+2. What constitutes a good fit.
+3. How complexity is controlled.
+4. What output is ultimately produced.
+
+### Mathematical formulation
+
+Define every symbol before or immediately after using it.
+
+$$
+\widehat{\beta}
+=
+\arg\min_{\beta}
+\left[
+\frac{1}{n}
+\sum_{i=1}^{n}
+\left(y_i - x_i^\top \beta\right)^2
++
+\lambda \lVert\beta\rVert_2^2
+\right].
+$$ {#eq-objective}
+
+In @eq-objective:
+
+- The first term measures ...
+- The second term controls ...
+- $\lambda$ determines ...
+
+### Assumptions
+
+| Assumption | Why it matters | How we will assess it |
+|---|---|---|
+| Assumption 1 | Consequence | Diagnostic |
+| Assumption 2 | Consequence | Diagnostic |
+| Assumption 3 | Consequence | Diagnostic |
+
+::: {.callout-warning}
+## Important limitation
+
+State the assumption most likely to be violated in practice and what that does
+to the result.
+:::
+
+## Implementation from scratch
+
+Implement only the core mechanism. Supporting production code should live in
+`src/statlearn/`, not inside the notebook.
+
+```{python}
+#| label: scratch-implementation
+#| code-fold: false
+
+def fit_method(X: np.ndarray, y: np.ndarray):
+    """Fit the educational implementation.
+
+    Parameters
+    ----------
+    X:
+        Two-dimensional design matrix.
+    y:
+        One-dimensional response vector.
+    """
+    raise NotImplementedError
+```
+
+Explain the algorithm’s steps, numerical considerations, and computational
+complexity.
+
+## Library implementation
+
+```{python}
+#| label: library-implementation
+
+# Fit the corresponding scikit-learn or statsmodels implementation.
+```
+
+Discuss differences between your educational implementation and the library:
+
+- Input validation
+- Numerical stability
+- Optimization method
+- Default regularization
+- Treatment of intercepts
+- Available diagnostics
+
+## Controlled experiment
+
+State a falsifiable question.
+
+**Hypothesis:** ...
+
+**Baseline:** ...
+
+**Metric:** ...
+
+**Validation design:** ...
+
+```{python}
+#| label: experiment
+#| code-fold: true
+
+# Generate or prepare data, fit the baseline and candidate model,
+# and collect results into a tidy data frame.
+```
+
+```{python}
+#| label: fig-main-result
+#| fig-cap: "Candidate method compared with the baseline."
+#| fig-alt: "Describe the substantive pattern visible in the chart."
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+
+# Plot experiment results.
+
+ax.set(
+    title="Descriptive result title",
+    xlabel="Meaningful x-axis label",
+    ylabel="Meaningful y-axis label",
+)
+plt.show()
+```
+
+Interpret @fig-main-result in plain language. Include effect sizes or error
+differences, not merely “model A performed better.”
+
+## Diagnostics
+
+Evaluate whichever diagnostics matter for this method:
+
+- Residual behavior
+- Calibration
+- Stability across resamples
+- Sensitivity to hyperparameters
+- Performance across subgroups
+- Difference between training and test error
+
+```{python}
+#| label: fig-diagnostics
+#| fig-cap: "Diagnostic results for the fitted model."
+#| fig-alt: "Accessible description of the diagnostic plot."
+
+# Diagnostic visualization
+```
+
+## Failure case
+
+Construct or identify a case where the method behaves poorly.
+
+```{python}
+#| label: failure-case
+
+# Deliberately violate an important assumption.
+```
+
+::: {.callout-important}
+## What failed?
+
+Explain whether the failure resulted from:
+
+- Model misspecification
+- Insufficient data
+- High variance
+- Leakage
+- Extrapolation
+- Class imbalance
+- An inappropriate metric
+- Optimization or numerical issues
+:::
+
+## Robustness checks
+
+Report at least two of the following:
+
+- Alternative random seeds
+- Alternative train/test splits
+- Bootstrap intervals
+- Different preprocessing choices
+- Alternative metrics
+- Sensitivity to influential observations
+- Comparison with a deliberately simple model
+
+```{python}
+#| label: tbl-robustness
+#| tbl-cap: "Sensitivity of the conclusion to modeling choices"
+
+# Return a compact comparison table.
+```
+
+## Connection to quantitative research
+
+Keep this short and honest.
+
+- Where might this method appear in investment research?
+- What changes when observations are time-dependent?
+- Which assumptions become especially dangerous?
+- Would random cross-validation cause leakage?
+- Is the output a forecast, risk estimate, ranking, or portfolio input?
+
+## Exercises and extensions
+
+### Textbook exercise
+
+Give the exercise reference, then present your own solution without copying the
+book’s wording.
+
+### Independent extension
+
+Change one important aspect of the original problem:
+
+- Use a second dataset.
+- Simulate an assumption violation.
+- Compare another estimator.
+- Add uncertainty estimates.
+- Replace random validation with time-ordered validation.
+
+## Conclusions
+
+### What the evidence supports
+
+- ...
+- ...
+- ...
+
+### What the evidence does not support
+
+- ...
+- ...
+
+### Remaining questions
+
+- ...
+- ...
+
+## Reproducibility
+
+```{python}
+#| label: reproducibility
+#| code-fold: true
+
+packages = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
+]
+
+pd.DataFrame(
+    {
+        "package": packages,
+        "version": [version(package) for package in packages],
+    }
+)
+```
+
+This analysis uses random seed `42`. Dependency versions are pinned in the
+repository lockfile.
+
+## References

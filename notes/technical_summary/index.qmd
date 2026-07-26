@@ -1,0 +1,47 @@
+---
+title: "Outlook"
+subtitle: "An Introduction to Statistical Learning"
+author:
+  - name: "Yvan Richard"
+    email: "yvan.richard2004@gmail.com"
+description: |
+  An independent study of statistical learning through mathematical
+  explanations, Python implementations, and reproducible experiments.
+---
+
+
+
+## About this project {.unnumbered}
+
+This project is an independent study of *An Introduction to Statistical
+Learning with Applications in Python* [@james2023].
+
+The objective is not to reproduce the textbook chapter by chapter. Instead,
+the project develops three complementary skills:
+
+- Explaining statistical methods precisely
+- Implementing their essential mechanics in Python from scratch using `NumPy`
+- Testing when the methods work, fail, or produce misleading conclusions
+
+Each chapter combines intuition, mathematical formulation, implementation,
+experimentation, diagnostics, and practical limitations.
+
+::: {.callout-note}
+## Project status
+
+This is an active learning project. Completed chapters are reproducible;
+planned chapters and extensions are identified in the roadmap below.
+:::
+
+::: {.callout-important}
+## Independent educational project
+
+This repository is not affiliated with or endorsed by the textbook's authors
+or publisher. Explanations, implementations, experiments, and conclusions are
+my own. The textbook should be consulted for the authoritative treatment.
+:::
+
+## About the Author {.unnumbered}
+
+TBD.
+

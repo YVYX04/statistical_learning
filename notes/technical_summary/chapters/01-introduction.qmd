@@ -1,0 +1,15 @@
+---
+title: "Introduction"
+subtitle: "Introduction to Statistical Learning"
+description: "Mapping the territory."
+categories:
+  - statistical-learning
+---
+
+## Overview
+
+*Statistical learning* is considered as a "set of tools" leveraged to "understand
+data". Typically, we distinguish two main types of statistical learning problems: *supervised learning* and *unsupervised learning*. In supervised learning, we have a set of observations
+with known outcomes, and we want to learn a function that maps inputs to outputs. In unsupervised learning, we have a set of observations without known outcomes, and we want to discover patterns or structures in the data.
+
+The following chapters will explore a wide range of statistical learning methods, including linear regression, classification, resampling methods, and more. Each chapter will provide a detailed explanation of the method, its assumptions, implementation in Python, and practical applications.

@@ -1,0 +1,8 @@
+.venv
+
+# python related
+*.py[cod]
+__pycache__/
+
+# .DS_Store (all files)
+*.DS_Store
