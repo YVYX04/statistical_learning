@@ -1,9 +1,10 @@
 [project]
 name = "statistical-learning"
 version = "0.1.0"
-description = "Add your description here"
+description = "Statistical learning notes and exercises"
 readme = "README.md"
 requires-python = ">=3.14"
+
 dependencies = [
     "ipykernel>=7.3.0",
     "jupyter>=1.1.1",
@@ -14,12 +15,5 @@ dependencies = [
     "seaborn>=0.13.2",
 ]
 
-[build-system]
-requires = ["setuptools>=69"]
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = [
-    "stat_learning",
-    "stat_learning.plot",
-]
+[tool.uv]
+package = false

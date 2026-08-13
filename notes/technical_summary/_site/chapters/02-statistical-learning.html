@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>3&nbsp; Statistical Learning – Statistical Learning in Python</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,15 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../chapters/01-introduction.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-bf8030b5a8b8f2de5bceddfb8bf38a1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ec8eff129d6f50c8392963982e963180.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -227,7 +229,7 @@ window.Quarto = {
   <li><a href="#defining-statistical-learning" id="toc-defining-statistical-learning" class="nav-link active" data-scroll-target="#defining-statistical-learning"><span class="header-section-number">3.1</span> Defining Statistical Learning</a>
   <ul class="collapse">
   <li><a href="#data-problem-setup" id="toc-data-problem-setup" class="nav-link" data-scroll-target="#data-problem-setup"><span class="header-section-number">3.1.1</span> Data &amp; Problem Setup</a></li>
-  <li><a href="#why-estimate-f" id="toc-why-estimate-f" class="nav-link" data-scroll-target="#why-estimate-f"><span class="header-section-number">3.1.2</span> Why Estimate (f)?</a></li>
+  <li><a href="#why-estimate-f" id="toc-why-estimate-f" class="nav-link" data-scroll-target="#why-estimate-f"><span class="header-section-number">3.1.2</span> Why Estimate <span class="math inline">f</span>?</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -406,7 +408,7 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <p>Apparently, for each variable <span class="math inline">X_i \in X</span>, there is a positive relationship with the response variable <span class="math inline">Y</span>. This suggests that as advertising expenditures increase, sales also tend to increase. However, the strength and nature of these relationships may vary.</p>
 </section>
 <section id="why-estimate-f" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="why-estimate-f"><span class="header-section-number">3.1.2</span> Why Estimate (f)?</h3>
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="why-estimate-f"><span class="header-section-number">3.1.2</span> Why Estimate <span class="math inline">f</span>?</h3>
 <p>In statistical learning, we should clearly define the goal of estimating the function <span class="math inline">f</span>. We distinguish between two main reasons presented below.</p>
 <section id="prediction" class="level4" data-number="3.1.2.1">
 <h4 data-number="3.1.2.1" class="anchored" data-anchor-id="prediction"><span class="header-section-number">3.1.2.1</span> Prediction</h4>
@@ -1031,7 +1033,7 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>Apparently, for each variable $X_i \in X$, there is a positive relationship with the response variable $Y$. This suggests that as advertising expenditures increase, sales also tend to increase. However, the strength and nature of these relationships may vary.</span>
 <span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why Estimate \(f\)?</span></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why Estimate $f$?</span></span>
 <span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>In statistical learning, we should clearly define the goal of estimating the function $f$. We distinguish between two main reasons presented below.</span>
 <span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
