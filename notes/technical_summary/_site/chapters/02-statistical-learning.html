@@ -380,8 +380,8 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># lines</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">'tv'</span>, <span class="st">'radio'</span>, <span class="st">'newspaper'</span>]):</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>CHICAGO_55, edgecolor<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>ECONOMIST_RED)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>ECONOMIST_RED_60, edgecolor<span class="op">=</span>LONDON_20, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>CHICAGO_55)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># labels</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ax[i].set_title(<span class="ss">f'Sales vs </span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial Narrow'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
@@ -413,9 +413,30 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <section id="prediction" class="level4" data-number="3.1.2.1">
 <h4 data-number="3.1.2.1" class="anchored" data-anchor-id="prediction"><span class="header-section-number">3.1.2.1</span> Prediction</h4>
 <p>The primary goal is to predict the response variable <span class="math inline">Y</span> for new observations of the predictor variables <span class="math inline">X</span>. In this case, we are interested in building a model that can accurately forecast sales based on advertising expenditures. The focus is on minimizing prediction error and improving the model’s generalization to unseen data. We do not necessarily care about the specific form and interpretability of the function <span class="math inline">f</span>, as long as it provides accurate predictions. In these settings, we denote the predicted sales as <span class="math inline">\hat{Y}</span> and the predicted function as <span class="math inline">\hat{f}</span>.</p>
+<p>Importantly, the accuracy of the prediction <span class="math inline">Y</span> with respect to the prediction <span class="math inline">\hat Y</span> depends on two quantities: (i) the <em>irreducible error</em>, and (ii) the <em>reducible</em> error. By definition, the reducible error can be decreased by improving <span class="math inline">\hat f</span>. However, since <span class="math inline">Y</span> is also a function of <span class="math inline">\epsilon \sim \mathcal{N}(0, \sigma^2)</span> and <span class="math inline">E(\epsilon \mid X) = 0</span>; we cannot <em>perfectly</em> estimate <span class="math inline">Y</span> with <span class="math inline">\hat Y</span>.</p>
+<p>To illustrate this, let us consider the <em>fixed</em> set of predictors <span class="math inline">X</span> with the model <span class="math inline">\hat Y = \hat{f}(X)</span> and we further suppose that <span class="math inline">\hat f</span> is also fixed. Then, we have:</p>
+<p><span class="math display">
+\begin{aligned}
+E\left[(Y-\hat{Y})^2\right]
+&amp;= E\left[\left(f(X)+\epsilon-\hat{f}(X)\right)^2\right] \\
+&amp;= E\left[
+    (f(X)-\hat{f}(X))^2
+    + \epsilon^2
+    + 2\epsilon(f(X)-\hat{f}(X))
+\right] \\
+&amp;= E\left[(f(X)-\hat{f}(X))^2\right]
+   + E[\epsilon^2] \\
+&amp;=
+\underbrace{(f(X)-\hat f(X))^2}_{\text{reducible error}}
++
+\underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible error}}
+\end{aligned}
+</span></p>
+<p>since the cross product is <span class="math inline">0</span> because <span class="math inline">E[\epsilon (f(X) - \hat{f(X)})] = E[E[\epsilon (f(X) - \hat{f(X)}) \mid X] = 0</span> by definition of the error term.</p>
 </section>
 <section id="inference" class="level4" data-number="3.1.2.2">
 <h4 data-number="3.1.2.2" class="anchored" data-anchor-id="inference"><span class="header-section-number">3.1.2.2</span> Inference</h4>
+<p>AA.</p>
 
 
 <!-- -->
@@ -1013,8 +1034,8 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="co"># lines</span></span>
 <span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">'tv'</span>, <span class="st">'radio'</span>, <span class="st">'newspaper'</span>]):</span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>CHICAGO_55, edgecolor<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>ECONOMIST_RED)</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>ECONOMIST_RED_60, edgecolor<span class="op">=</span>LONDON_20, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>CHICAGO_55)</span>
 <span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># labels</span></span>
 <span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>  ax[i].set_title(<span class="ss">f'Sales vs </span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial Narrow'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
@@ -1041,8 +1062,35 @@ Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon
 <span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>The primary goal is to predict the response variable $Y$ for new observations of the predictor variables $X$. In this case, we are interested in building a model that can accurately forecast sales based on advertising expenditures. The focus is on minimizing prediction error and improving the model's generalization to unseen data. We do not necessarily care about the specific form and interpretability of the function $f$, as long as it provides accurate predictions. In these settings, we denote the predicted sales as $\hat{Y}$ and the predicted function as $\hat{f}$.</span>
 <span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Inference</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>Importantly, the accuracy of the prediction $Y$ with respect to the prediction $\hat Y$ depends on two quantities: (i) the *irreducible error*, and (ii) the *reducible* error.</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>By definition, the reducible error can be decreased by improving $\hat f$. However, since $Y$ is also a function of $\epsilon \sim \mathcal{N}(0, \sigma^2)$ and $E(\epsilon \mid X) = 0$; we cannot *perfectly* estimate $Y$ with $\hat Y$.</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>To illustrate this, let us consider the *fixed* set of predictors $X$ with the model $\hat Y = \hat{f}(X)$ and we further suppose that $\hat f$ is also fixed. Then, we have:</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>E\left<span class="co">[</span><span class="ot">(Y-\hat{Y})^2\right</span><span class="co">]</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">\left(f(X)+\epsilon-\hat{f}(X)\right)^2\right</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>&amp;= E\left[</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>    (f(X)-\hat{f}(X))^2</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>\epsilon^2</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>2\epsilon(f(X)-\hat{f}(X))</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>\right] <span class="sc">\\</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">(f(X)-\hat{f}(X))^2\right</span><span class="co">]</span></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="ss">   + </span>E<span class="co">[</span><span class="ot">\epsilon^2</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>&amp;=</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>\underbrace{(f(X)-\hat f(X))^2}_{\text{reducible error}}</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>+</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>\underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible error}}</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>since the cross product is $0$ because $E<span class="co">[</span><span class="ot">\epsilon (f(X) - \hat{f(X)})</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">E[\epsilon (f(X) - \hat{f(X)}) \mid X</span><span class="co">]</span> = 0$ by definition of the error term.</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Inference</span></span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>AA.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
