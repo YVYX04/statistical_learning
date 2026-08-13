@@ -174,9 +174,119 @@ E\left[(Y-\hat{Y})^2\right]
 \end{aligned}
 $$
 
-since the cross product is $0$ because $E[\epsilon (f(X) - \hat{f(X)})] = E[E[\epsilon (f(X) - \hat{f(X)}) \mid X] = 0$ by definition of the error term.
+since the cross product is $0$ because $E[\epsilon (f(X) - \hat{f(X)})] = E[E[\epsilon (f(X) - \hat{f(X)}) \mid X] = 0$ by definition of the error term. The core techniques we will learn aim to estimate $f$ while minimizing the reducible error.
 
 
 #### Inference
 
-AA.
+*Inference* is a completely different paradigm. It focuses on *understanding* the association between $Y$ and $X_1, \cdots, X_p$. Here, we estimate $f$ but our goal is to estimate as precisely as possible $Y$. The educated reader will notice that the science focused on developing these interpretable models is Econometrics. The types of model we select and the assumptions we formulate vary based on our goal: prediction or inference.
+
+### How Do We Estimate $f$?
+
+When estimating $f$, we will always assume that we used $n$ *training data* points.
+I rely on the same notation as @james2023 and we let $x_{i, j}$ denotes the $j$-th predictor (among the $p$ predictors we have), or input, for observation $i$; so we have $i \in \{1, \cdots, n\}$ and $j \in \{1, \cdots, p\}$.
+Correspondingly, we have $y_i$ representing the response variable for the $i$-th observation.
+Now, among the different function $\hat{f}$ we can estimate, we can typically classify them as either (i) *parametric*, and (ii) *non-parametric*.
+
+#### Parametric Methods
+
+when we opt for a parametric approach, this means that first we select a model. For instance, a *linear model* such as:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + (\cdots) + \beta_p X_p
+$$
+
+Now, instead of having to estimate an arbitrary $p$-dimensional function, we simply need to estimate the $p + 1$ $\beta_k$ coefficients. Selecting the method to use our $n$ training instances to *fit* or *train* our model is the second step. For instance, ordinary least squares (OLS) is a closed form solution to this optimization (we try to minimize the reducible error) problem. This linear model is referred to as *parametric* because it reduces the problem of estimating $f$ to estimating $p$ parameters.
+Of course, if we select a model whose form is far off from the *true* $f$, we will obtain poor results. We could then increase the flexibility of our model but we expose ourselves to *overfitting* the training data, i.e. our model fits very well the $n$ training instances but generalize very poorly to unseen data.
+
+#### Non-Parametric Methods
+
+For non-parametric methods, no assumption about the form of $f$ is made, so the risk of selecting a faulty functional form is gone.
+However, typically, since we do not *reduce* our optimization problem, the number of training instances needed to obtain a precise estimation of $f$ is much larger.
+Splines, discussed further in this summary, are an example of non-parametric methods.
+
+
+### Supervised Versus Unsupervised Learning
+
+TO BE WRITTEN (small overview and dicussion, one visual example with generated data for clustering)
+
+### Regression Versus Classification
+
+TO BE WRITTEN
+
+## Assessing Model Accuracy
+
+Selecting the best approach can be one of the most challenging parts of performing statistical learning in
+practice because for any given dataset, we might have a different *optimal* technique to estimate $f$. Furthermore,
+how do we determine which approach is the *best* for a given problem? This section explores this question.
+
+### Measuring the Quality of Fit
+
+Measuring the quality of the fit, i.e. how well our estimated function $\hat{f}$ predicts $Y$, depends on the type of task we are tackling.
+In the regression settings, the most commonly-used measure is the *mean-squared error* (MSE), given by:
+
+$$
+\text{MSE} = \frac{1}{n} \sum_{i = 1}^{n} (y_i - \hat{f}(x_i))^2
+$$
+
+where $\hat{f}(x_i) = \hat y_i$ is the prediction given by $\hat f$ for the $i$-th observation.
+Typically, when training our model (used for a regression task) we seek to minimize the MSE; however,
+we are measuring the MSE with our *training* data, hence the *training MSE* is not to be understood as a reliable metric
+of our model's accuracy. To get that, we should use our model to predict unseen *test data*. Then the MSE will be more
+informative and tells us how our model *really* perform. For instance, if we observe $MSE_{\text{test}} \gg MSE_{\text{training}}$,
+this suggests that our model is overfitting the training data. Below, I generate a synthetic example to illustrate this.
+
+
+#### Overfitting Training Data: A Synthetic Example
+
+Let us consider a plausible regresssion problem whith one regressor variable $X$, representing the size of a flat in square meters, and $Y$ being the monthly rent in CHF. We build a model to create these data. Below is a snapshot of the resulting dataframe.
+
+```{python}
+# generate the data with the following model:
+# model: y = a + bX + e
+# (y: rent in CHF, x: flat size in square meters, e: error term / noise)
+# > X ~ N(80, 20^2)
+# > e ~ N(0, 300^2)
+# > a = 300, b = 25
+
+# fix the seed for reproducibility
+np.random.seed(1)
+
+# parameters
+a = 300
+b = 25
+X_std = 20
+X_mean = 80
+e_std = 300
+e_mean = 0
+
+# size of the whole sample
+N = 1000
+
+# test and train sample sizes
+n_train = int(0.8 * N)
+n_test = 0.2 * N
+
+# draw data for X and e
+X = np.random.normal(loc=X_mean, scale=20, size=N)
+e = np.random.normal(loc=e_mean, scale=e_std, size=N)
+
+# compute Y
+Y = a + b * X + e
+
+# data frame for whole sample
+sample = pd.DataFrame(
+  {
+    "size": X,
+    "rent": Y
+  }
+)
+
+# split test and train set
+df_train = sample.iloc[:n_train].copy().reset_index(drop=True)
+df_test = sample.iloc[n_train:].copy().reset_index(drop=True)
+
+# head of the dataset
+df_train.head()
+```
+

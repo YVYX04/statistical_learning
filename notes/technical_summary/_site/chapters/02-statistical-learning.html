@@ -59,7 +59,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -230,6 +249,13 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#data-problem-setup" id="toc-data-problem-setup" class="nav-link" data-scroll-target="#data-problem-setup"><span class="header-section-number">3.1.1</span> Data &amp; Problem Setup</a></li>
   <li><a href="#why-estimate-f" id="toc-why-estimate-f" class="nav-link" data-scroll-target="#why-estimate-f"><span class="header-section-number">3.1.2</span> Why Estimate <span class="math inline">f</span>?</a></li>
+  <li><a href="#how-do-we-estimate-f" id="toc-how-do-we-estimate-f" class="nav-link" data-scroll-target="#how-do-we-estimate-f"><span class="header-section-number">3.1.3</span> How Do We Estimate <span class="math inline">f</span>?</a></li>
+  <li><a href="#supervised-versus-unsupervised-learning" id="toc-supervised-versus-unsupervised-learning" class="nav-link" data-scroll-target="#supervised-versus-unsupervised-learning"><span class="header-section-number">3.1.4</span> Supervised Versus Unsupervised Learning</a></li>
+  <li><a href="#regression-versus-classification" id="toc-regression-versus-classification" class="nav-link" data-scroll-target="#regression-versus-classification"><span class="header-section-number">3.1.5</span> Regression Versus Classification</a></li>
+  </ul></li>
+  <li><a href="#assessing-model-accuracy" id="toc-assessing-model-accuracy" class="nav-link" data-scroll-target="#assessing-model-accuracy"><span class="header-section-number">3.2</span> Assessing Model Accuracy</a>
+  <ul class="collapse">
+  <li><a href="#measuring-the-quality-of-fit" id="toc-measuring-the-quality-of-fit" class="nav-link" data-scroll-target="#measuring-the-quality-of-fit"><span class="header-section-number">3.2.1</span> Measuring the Quality of Fit</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -432,15 +458,154 @@ E\left[(Y-\hat{Y})^2\right]
 \underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible error}}
 \end{aligned}
 </span></p>
-<p>since the cross product is <span class="math inline">0</span> because <span class="math inline">E[\epsilon (f(X) - \hat{f(X)})] = E[E[\epsilon (f(X) - \hat{f(X)}) \mid X] = 0</span> by definition of the error term.</p>
+<p>since the cross product is <span class="math inline">0</span> because <span class="math inline">E[\epsilon (f(X) - \hat{f(X)})] = E[E[\epsilon (f(X) - \hat{f(X)}) \mid X] = 0</span> by definition of the error term. The core techniques we will learn aim to estimate <span class="math inline">f</span> while minimizing the reducible error.</p>
 </section>
 <section id="inference" class="level4" data-number="3.1.2.2">
 <h4 data-number="3.1.2.2" class="anchored" data-anchor-id="inference"><span class="header-section-number">3.1.2.2</span> Inference</h4>
-<p>AA.</p>
+<p><em>Inference</em> is a completely different paradigm. It focuses on <em>understanding</em> the association between <span class="math inline">Y</span> and <span class="math inline">X_1, \cdots, X_p</span>. Here, we estimate <span class="math inline">f</span> but our goal is to estimate as precisely as possible <span class="math inline">Y</span>. The educated reader will notice that the science focused on developing these interpretable models is Econometrics. The types of model we select and the assumptions we formulate vary based on our goal: prediction or inference.</p>
+</section>
+</section>
+<section id="how-do-we-estimate-f" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="how-do-we-estimate-f"><span class="header-section-number">3.1.3</span> How Do We Estimate <span class="math inline">f</span>?</h3>
+<p>When estimating <span class="math inline">f</span>, we will always assume that we used <span class="math inline">n</span> <em>training data</em> points. I rely on the same notation as <span class="citation" data-cites="james2023">James et al. (<a href="../references.html#ref-james2023" role="doc-biblioref">2023</a>)</span> and we let <span class="math inline">x_{i, j}</span> denotes the <span class="math inline">j</span>-th predictor (among the <span class="math inline">p</span> predictors we have), or input, for observation <span class="math inline">i</span>; so we have <span class="math inline">i \in \{1, \cdots, n\}</span> and <span class="math inline">j \in \{1, \cdots, p\}</span>. Correspondingly, we have <span class="math inline">y_i</span> representing the response variable for the <span class="math inline">i</span>-th observation. Now, among the different function <span class="math inline">\hat{f}</span> we can estimate, we can typically classify them as either (i) <em>parametric</em>, and (ii) <em>non-parametric</em>.</p>
+<section id="parametric-methods" class="level4" data-number="3.1.3.1">
+<h4 data-number="3.1.3.1" class="anchored" data-anchor-id="parametric-methods"><span class="header-section-number">3.1.3.1</span> Parametric Methods</h4>
+<p>when we opt for a parametric approach, this means that first we select a model. For instance, a <em>linear model</em> such as:</p>
+<p><span class="math display">
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + (\cdots) + \beta_p X_p
+</span></p>
+<p>Now, instead of having to estimate an arbitrary <span class="math inline">p</span>-dimensional function, we simply need to estimate the <span class="math inline">p + 1</span> <span class="math inline">\beta_k</span> coefficients. Selecting the method to use our <span class="math inline">n</span> training instances to <em>fit</em> or <em>train</em> our model is the second step. For instance, ordinary least squares (OLS) is a closed form solution to this optimization (we try to minimize the reducible error) problem. This linear model is referred to as <em>parametric</em> because it reduces the problem of estimating <span class="math inline">f</span> to estimating <span class="math inline">p</span> parameters. Of course, if we select a model whose form is far off from the <em>true</em> <span class="math inline">f</span>, we will obtain poor results. We could then increase the flexibility of our model but we expose ourselves to <em>overfitting</em> the training data, i.e.&nbsp;our model fits very well the <span class="math inline">n</span> training instances but generalize very poorly to unseen data.</p>
+</section>
+<section id="non-parametric-methods" class="level4" data-number="3.1.3.2">
+<h4 data-number="3.1.3.2" class="anchored" data-anchor-id="non-parametric-methods"><span class="header-section-number">3.1.3.2</span> Non-Parametric Methods</h4>
+<p>For non-parametric methods, no assumption about the form of <span class="math inline">f</span> is made, so the risk of selecting a faulty functional form is gone. However, typically, since we do not <em>reduce</em> our optimization problem, the number of training instances needed to obtain a precise estimation of <span class="math inline">f</span> is much larger. Splines, discussed further in this summary, are an example of non-parametric methods.</p>
+</section>
+</section>
+<section id="supervised-versus-unsupervised-learning" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="supervised-versus-unsupervised-learning"><span class="header-section-number">3.1.4</span> Supervised Versus Unsupervised Learning</h3>
+<p>TO BE WRITTEN (small overview and dicussion, one visual example with generated data for clustering)</p>
+</section>
+<section id="regression-versus-classification" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="regression-versus-classification"><span class="header-section-number">3.1.5</span> Regression Versus Classification</h3>
+<p>TO BE WRITTEN</p>
+</section>
+</section>
+<section id="assessing-model-accuracy" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="assessing-model-accuracy"><span class="header-section-number">3.2</span> Assessing Model Accuracy</h2>
+<p>Selecting the best approach can be one of the most challenging parts of performing statistical learning in practice because for any given dataset, we might have a different <em>optimal</em> technique to estimate <span class="math inline">f</span>. Furthermore, how do we determine which approach is the <em>best</em> for a given problem? This section explores this question.</p>
+<section id="measuring-the-quality-of-fit" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="measuring-the-quality-of-fit"><span class="header-section-number">3.2.1</span> Measuring the Quality of Fit</h3>
+<p>Measuring the quality of the fit, i.e.&nbsp;how well our estimated function <span class="math inline">\hat{f}</span> predicts <span class="math inline">Y</span>, depends on the type of task we are tackling. In the regression settings, the most commonly-used measure is the <em>mean-squared error</em> (MSE), given by:</p>
+<p><span class="math display">
+\text{MSE} = \frac{1}{n} \sum_{i = 1}^{n} (y_i - \hat{f}(x_i))^2
+</span></p>
+<p>where <span class="math inline">\hat{f}(x_i) = \hat y_i</span> is the prediction given by <span class="math inline">\hat f</span> for the <span class="math inline">i</span>-th observation. Typically, when training our model (used for a regression task) we seek to minimize the MSE; however, we are measuring the MSE with our <em>training</em> data, hence the <em>training MSE</em> is not to be understood as a reliable metric of our model’s accuracy. To get that, we should use our model to predict unseen <em>test data</em>. Then the MSE will be more informative and tells us how our model <em>really</em> perform. For instance, if we observe <span class="math inline">MSE_{\text{test}} \gg MSE_{\text{training}}</span>, this suggests that our model is overfitting the training data. Below, I generate a synthetic example to illustrate this.</p>
+<section id="overfitting-training-data-a-synthetic-example" class="level4" data-number="3.2.1.1">
+<h4 data-number="3.2.1.1" class="anchored" data-anchor-id="overfitting-training-data-a-synthetic-example"><span class="header-section-number">3.2.1.1</span> Overfitting Training Data: A Synthetic Example</h4>
+<p>Let us consider a plausible regresssion problem whith one regressor variable <span class="math inline">X</span>, representing the size of a flat in square meters, and <span class="math inline">Y</span> being the monthly rent in CHF. We build a model to create these data. Below is a snapshot of the resulting dataframe.</p>
+<div id="cfd34293" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate the data with the following model:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model: y = a + bX + e</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (y: rent in CHF, x: flat size in square meters, e: error term / noise)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; X ~ N(80, 20^2)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; e ~ N(0, 300^2)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; a = 300, b = 25</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the seed for reproducibility</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>X_std <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>X_mean <span class="op">=</span> <span class="dv">80</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>e_std <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>e_mean <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the whole sample</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># test and train sample sizes</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.8</span> <span class="op">*</span> N)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>n_test <span class="op">=</span> <span class="fl">0.2</span> <span class="op">*</span> N</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># draw data for X and e</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(loc<span class="op">=</span>X_mean, scale<span class="op">=</span><span class="dv">20</span>, size<span class="op">=</span>N)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> np.random.normal(loc<span class="op">=</span>e_mean, scale<span class="op">=</span>e_std, size<span class="op">=</span>N)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># compute Y</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> a <span class="op">+</span> b <span class="op">*</span> X <span class="op">+</span> e</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co"># data frame for whole sample</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"size"</span>: X,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"rent"</span>: Y</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co"># split test and train set</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>df_train <span class="op">=</span> sample.iloc[:n_train].copy().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>df_test <span class="op">=</span> sample.iloc[n_train:].copy().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co"># head of the dataset</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>df_train.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">size</th>
+<th data-quarto-table-cell-role="th">rent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>112.486907</td>
+<td>3066.201833</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>67.764872</td>
+<td>1264.369239</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>69.436565</td>
+<td>2188.309425</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>58.540628</td>
+<td>1666.305990</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>97.308153</td>
+<td>2279.380832</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
 
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-james2023" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, Robert Tibshirani, and Jonathan Taylor. 2023. <em>An Introduction to Statistical Learning: With Applications in Python</em>. Springer Texts in Statistics. Springer. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>.
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -909,188 +1074,297 @@ E\left[(Y-\hat{Y})^2\right]
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Statistical Learning"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Introduction to Statistical Learning"</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Understanding the fundamentals of statistical learning."</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - statistical-learning</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Defining Statistical Learning</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>This section introduces the concept of statistical learning, with a</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>practice example selected from the textbook. The <span class="in">`advertising`</span> dataset</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>is located in the <span class="in">`data/isl/`</span> directory.</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co"># colors</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>ECONOMIST_RED <span class="op">=</span> <span class="st">"#E3120B"</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>ECONOMIST_RED_60 <span class="op">=</span> <span class="st">"#F6423C"</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>CHICAGO_20 <span class="op">=</span> <span class="st">"#141F52"</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>CHICAGO_30 <span class="op">=</span> <span class="st">"#1F2E7A"</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>CHICAGO_45 <span class="op">=</span> <span class="st">"#2E45B8"</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>CHICAGO_55 <span class="op">=</span> <span class="st">"#475ED1"</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>CHICAGO_90 <span class="op">=</span> <span class="st">"#D6DBF5"</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>CHICAGO_95 <span class="op">=</span> <span class="st">"#EBEDFA"</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>HONG_KONG_45 <span class="op">=</span> <span class="st">"#1DC9A4"</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>HONG_KONG_55 <span class="op">=</span> <span class="st">"#36E2BD"</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>HONG_KONG_90 <span class="op">=</span> <span class="st">"#D2F9F0"</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>HONG_KONG_95 <span class="op">=</span> <span class="st">"#E9FCF8"</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>TOKYO_45 <span class="op">=</span> <span class="st">"#C91D42"</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>TOKYO_55 <span class="op">=</span> <span class="st">"#E2365B"</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>TOKYO_90 <span class="op">=</span> <span class="st">"#F9D2DB"</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>TOKYO_95 <span class="op">=</span> <span class="st">"#FCE9ED"</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>SINGAPORE_55 <span class="op">=</span> <span class="st">"#F97A1F"</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>SINGAPORE_65 <span class="op">=</span> <span class="st">"#FB9851"</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>SINGAPORE_75 <span class="op">=</span> <span class="st">"#FCB583"</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>SINGAPORE_90 <span class="op">=</span> <span class="st">"#FEE1CD"</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>NEW_YORK_55 <span class="op">=</span> <span class="st">"#F9C31F"</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>NEW_YORK_65 <span class="op">=</span> <span class="st">"#FBD051"</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>NEW_YORK_75 <span class="op">=</span> <span class="st">"#FCDE83"</span></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>NEW_YORK_90 <span class="op">=</span> <span class="st">"#FEF2CD"</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>LONDON_5 <span class="op">=</span> <span class="st">"#0D0D0D"</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>LONDON_10 <span class="op">=</span> <span class="st">"#1A1A1A"</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>LONDON_20 <span class="op">=</span> <span class="st">"#333333"</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>LONDON_35 <span class="op">=</span> <span class="st">"#595959"</span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>LONDON_70 <span class="op">=</span> <span class="st">"#B3B3B3"</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>LONDON_85 <span class="op">=</span> <span class="st">"#D9D9D9"</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>LONDON_95 <span class="op">=</span> <span class="st">"#F2F2F2"</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>LONDON_100 <span class="op">=</span> <span class="st">"#FFFFFF"</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_85 <span class="op">=</span> <span class="st">"#E1DFD0"</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_90 <span class="op">=</span> <span class="st">"#EBE9E0"</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_95 <span class="op">=</span> <span class="st">"#F5F4EF"</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>PARIS_85 <span class="op">=</span> <span class="st">"#D0E1E1"</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>PARIS_90 <span class="op">=</span> <span class="st">"#E0EBEB"</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>PARIS_95 <span class="op">=</span> <span class="st">"#EFF5F5"</span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data &amp; Problem Setup</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>Let us suppose that we have a dataset containing information about advertising expenditures and sales for a company. The dataset take the following form:</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-data</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co"># load the advertising dataset</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> pd.read_csv(<span class="st">"../../../data/isl/advertising.csv"</span>)</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co"># rename columns</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>columns_name <span class="op">=</span> {</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TV"</span>: <span class="st">"tv"</span>,</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Radio"</span>: <span class="st">"radio"</span>,</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Newspaper"</span>: <span class="st">"newspaper"</span>,</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Sales"</span>: <span class="st">"sales"</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a.rename(columns<span class="op">=</span>columns_name)</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co"># select relevant columns</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a[columns_name.values()].copy()</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>a[<span class="st">'idx'</span>] <span class="op">=</span> a.index</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co"># put idx as the first column</span></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'idx'</span>] <span class="op">+</span> [col <span class="cf">for</span> col <span class="kw">in</span> a.columns <span class="cf">if</span> col <span class="op">!=</span> <span class="st">'idx'</span>]</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a[cols]</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co"># show first few rows of the dataset</span></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>a.head()</span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>In this setting, we are interested in understanding how advertising expenditures on TV, radio, and newspapers affect sales. The goal is to build a statistical model that can predict sales based on the advertising expenditures. As such, the variable <span class="in">`sales`</span> is the **response** variable, while `tv`, `radio`, and `newspaper` are the **predictor** variables.</span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>The mathematical representation of the problem can be expressed as follows:</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon</span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>$$ {#eq-001}</span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>where <span class="sc">\(</span>f<span class="sc">\)</span> is the unknown function that relates the predictors $X = (X_1, X_2, X_3)$ to the response $Y$, and <span class="sc">\(</span>\epsilon<span class="sc">\)</span> is the error term that captures the variability in sales not explained by the predictors (typically assumed to be normally distributed with mean zero). For instance, we could consider the following scatter plots that illustrate the relationship between each predictor and the response variable.</span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: scatter-plot</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Scatter plots of sales against advertising expenditures on TV, radio, and newspapers. (95% C.I.)."</span></span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="co"># lines</span></span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">'tv'</span>, <span class="st">'radio'</span>, <span class="st">'newspaper'</span>]):</span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>ECONOMIST_RED_60, edgecolor<span class="op">=</span>LONDON_20, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>CHICAGO_55)</span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># labels</span></span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>  ax[i].set_title(<span class="ss">f'Sales vs </span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial Narrow'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>  ax[i].set_xlabel(<span class="ss">f'</span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss"> Expenditure'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial'</span>)</span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>  ax[i].set_ylabel(<span class="st">'Sales'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial'</span>)</span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>  ax[i].spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  ax[i].spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>  ax[i].tick_params(axis<span class="op">=</span><span class="st">'both'</span>, which<span class="op">=</span><span class="st">'major'</span>, labelsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>  ax[i].grid(axis<span class="op">=</span><span class="st">'y'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, alpha<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span>LONDON_85)</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>Apparently, for each variable $X_i \in X$, there is a positive relationship with the response variable $Y$. This suggests that as advertising expenditures increase, sales also tend to increase. However, the strength and nature of these relationships may vary.</span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why Estimate $f$?</span></span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>In statistical learning, we should clearly define the goal of estimating the function $f$. We distinguish between two main reasons presented below.</span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Prediction</span></span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>The primary goal is to predict the response variable $Y$ for new observations of the predictor variables $X$. In this case, we are interested in building a model that can accurately forecast sales based on advertising expenditures. The focus is on minimizing prediction error and improving the model's generalization to unseen data. We do not necessarily care about the specific form and interpretability of the function $f$, as long as it provides accurate predictions. In these settings, we denote the predicted sales as $\hat{Y}$ and the predicted function as $\hat{f}$.</span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>Importantly, the accuracy of the prediction $Y$ with respect to the prediction $\hat Y$ depends on two quantities: (i) the *irreducible error*, and (ii) the *reducible* error.</span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>By definition, the reducible error can be decreased by improving $\hat f$. However, since $Y$ is also a function of $\epsilon \sim \mathcal{N}(0, \sigma^2)$ and $E(\epsilon \mid X) = 0$; we cannot *perfectly* estimate $Y$ with $\hat Y$.</span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>To illustrate this, let us consider the *fixed* set of predictors $X$ with the model $\hat Y = \hat{f}(X)$ and we further suppose that $\hat f$ is also fixed. Then, we have:</span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>E\left<span class="co">[</span><span class="ot">(Y-\hat{Y})^2\right</span><span class="co">]</span></span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">\left(f(X)+\epsilon-\hat{f}(X)\right)^2\right</span><span class="co">]</span> <span class="sc">\\</span></span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>&amp;= E\left[</span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>    (f(X)-\hat{f}(X))^2</span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>\epsilon^2</span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>2\epsilon(f(X)-\hat{f}(X))</span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>\right] <span class="sc">\\</span></span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">(f(X)-\hat{f}(X))^2\right</span><span class="co">]</span></span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="ss">   + </span>E<span class="co">[</span><span class="ot">\epsilon^2</span><span class="co">]</span> <span class="sc">\\</span></span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>&amp;=</span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>\underbrace{(f(X)-\hat f(X))^2}_{\text{reducible error}}</span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>+</span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>\underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible error}}</span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>since the cross product is $0$ because $E<span class="co">[</span><span class="ot">\epsilon (f(X) - \hat{f(X)})</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">E[\epsilon (f(X) - \hat{f(X)}) \mid X</span><span class="co">]</span> = 0$ by definition of the error term.</span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Inference</span></span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>AA.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Statistical Learning"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Introduction to Statistical Learning"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Understanding the fundamentals of statistical learning."</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - statistical-learning</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Defining Statistical Learning</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>This section introduces the concept of statistical learning, with a</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>practice example selected from the textbook. The <span class="in">`advertising`</span> dataset</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>is located in the <span class="in">`data/isl/`</span> directory.</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># colors</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>ECONOMIST_RED <span class="op">=</span> <span class="st">"#E3120B"</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>ECONOMIST_RED_60 <span class="op">=</span> <span class="st">"#F6423C"</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>CHICAGO_20 <span class="op">=</span> <span class="st">"#141F52"</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>CHICAGO_30 <span class="op">=</span> <span class="st">"#1F2E7A"</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>CHICAGO_45 <span class="op">=</span> <span class="st">"#2E45B8"</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>CHICAGO_55 <span class="op">=</span> <span class="st">"#475ED1"</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>CHICAGO_90 <span class="op">=</span> <span class="st">"#D6DBF5"</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>CHICAGO_95 <span class="op">=</span> <span class="st">"#EBEDFA"</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>HONG_KONG_45 <span class="op">=</span> <span class="st">"#1DC9A4"</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>HONG_KONG_55 <span class="op">=</span> <span class="st">"#36E2BD"</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>HONG_KONG_90 <span class="op">=</span> <span class="st">"#D2F9F0"</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>HONG_KONG_95 <span class="op">=</span> <span class="st">"#E9FCF8"</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>TOKYO_45 <span class="op">=</span> <span class="st">"#C91D42"</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>TOKYO_55 <span class="op">=</span> <span class="st">"#E2365B"</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>TOKYO_90 <span class="op">=</span> <span class="st">"#F9D2DB"</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>TOKYO_95 <span class="op">=</span> <span class="st">"#FCE9ED"</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>SINGAPORE_55 <span class="op">=</span> <span class="st">"#F97A1F"</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>SINGAPORE_65 <span class="op">=</span> <span class="st">"#FB9851"</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>SINGAPORE_75 <span class="op">=</span> <span class="st">"#FCB583"</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>SINGAPORE_90 <span class="op">=</span> <span class="st">"#FEE1CD"</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>NEW_YORK_55 <span class="op">=</span> <span class="st">"#F9C31F"</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>NEW_YORK_65 <span class="op">=</span> <span class="st">"#FBD051"</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>NEW_YORK_75 <span class="op">=</span> <span class="st">"#FCDE83"</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>NEW_YORK_90 <span class="op">=</span> <span class="st">"#FEF2CD"</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>LONDON_5 <span class="op">=</span> <span class="st">"#0D0D0D"</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>LONDON_10 <span class="op">=</span> <span class="st">"#1A1A1A"</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>LONDON_20 <span class="op">=</span> <span class="st">"#333333"</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>LONDON_35 <span class="op">=</span> <span class="st">"#595959"</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>LONDON_70 <span class="op">=</span> <span class="st">"#B3B3B3"</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>LONDON_85 <span class="op">=</span> <span class="st">"#D9D9D9"</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>LONDON_95 <span class="op">=</span> <span class="st">"#F2F2F2"</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>LONDON_100 <span class="op">=</span> <span class="st">"#FFFFFF"</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_85 <span class="op">=</span> <span class="st">"#E1DFD0"</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_90 <span class="op">=</span> <span class="st">"#EBE9E0"</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>LOS_ANGELES_95 <span class="op">=</span> <span class="st">"#F5F4EF"</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>PARIS_85 <span class="op">=</span> <span class="st">"#D0E1E1"</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>PARIS_90 <span class="op">=</span> <span class="st">"#E0EBEB"</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>PARIS_95 <span class="op">=</span> <span class="st">"#EFF5F5"</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data &amp; Problem Setup</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>Let us suppose that we have a dataset containing information about advertising expenditures and sales for a company. The dataset take the following form:</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-data</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="co"># load the advertising dataset</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> pd.read_csv(<span class="st">"../../../data/isl/advertising.csv"</span>)</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="co"># rename columns</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>columns_name <span class="op">=</span> {</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TV"</span>: <span class="st">"tv"</span>,</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Radio"</span>: <span class="st">"radio"</span>,</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Newspaper"</span>: <span class="st">"newspaper"</span>,</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Sales"</span>: <span class="st">"sales"</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a.rename(columns<span class="op">=</span>columns_name)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="co"># select relevant columns</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a[columns_name.values()].copy()</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>a[<span class="st">'idx'</span>] <span class="op">=</span> a.index</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="co"># put idx as the first column</span></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'idx'</span>] <span class="op">+</span> [col <span class="cf">for</span> col <span class="kw">in</span> a.columns <span class="cf">if</span> col <span class="op">!=</span> <span class="st">'idx'</span>]</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a[cols]</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="co"># show first few rows of the dataset</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>a.head()</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>In this setting, we are interested in understanding how advertising expenditures on TV, radio, and newspapers affect sales. The goal is to build a statistical model that can predict sales based on the advertising expenditures. As such, the variable <span class="in">`sales`</span> is the **response** variable, while `tv`, `radio`, and `newspaper` are the **predictor** variables.</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>The mathematical representation of the problem can be expressed as follows:</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>Y = f(X_1, X_2, X_3) + \epsilon = f(X) + \epsilon</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>$$ {#eq-001}</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>where <span class="sc">\(</span>f<span class="sc">\)</span> is the unknown function that relates the predictors $X = (X_1, X_2, X_3)$ to the response $Y$, and <span class="sc">\(</span>\epsilon<span class="sc">\)</span> is the error term that captures the variability in sales not explained by the predictors (typically assumed to be normally distributed with mean zero). For instance, we could consider the following scatter plots that illustrate the relationship between each predictor and the response variable.</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: scatter-plot</span></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Scatter plots of sales against advertising expenditures on TV, radio, and newspapers. (95% C.I.)."</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a><span class="co"># lines</span></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="st">'tv'</span>, <span class="st">'radio'</span>, <span class="st">'newspaper'</span>]):</span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  sns.scatterplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], color<span class="op">=</span>ECONOMIST_RED_60, edgecolor<span class="op">=</span>LONDON_20, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>  sns.regplot(data<span class="op">=</span>a, x<span class="op">=</span>col, y<span class="op">=</span><span class="st">'sales'</span>, ax<span class="op">=</span>ax[i], scatter<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span>CHICAGO_55)</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># labels</span></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>  ax[i].set_title(<span class="ss">f'Sales vs </span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial Narrow'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>  ax[i].set_xlabel(<span class="ss">f'</span><span class="sc">{</span>col<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss"> Expenditure'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial'</span>)</span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>  ax[i].set_ylabel(<span class="st">'Sales'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, family<span class="op">=</span><span class="st">'Arial'</span>)</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  <span class="co"># aesthetics</span></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>  ax[i].spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>  ax[i].spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  ax[i].tick_params(axis<span class="op">=</span><span class="st">'both'</span>, which<span class="op">=</span><span class="st">'major'</span>, labelsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  ax[i].grid(axis<span class="op">=</span><span class="st">'y'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, alpha<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span>LONDON_85)</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>Apparently, for each variable $X_i \in X$, there is a positive relationship with the response variable $Y$. This suggests that as advertising expenditures increase, sales also tend to increase. However, the strength and nature of these relationships may vary.</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why Estimate $f$?</span></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>In statistical learning, we should clearly define the goal of estimating the function $f$. We distinguish between two main reasons presented below.</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Prediction</span></span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>The primary goal is to predict the response variable $Y$ for new observations of the predictor variables $X$. In this case, we are interested in building a model that can accurately forecast sales based on advertising expenditures. The focus is on minimizing prediction error and improving the model's generalization to unseen data. We do not necessarily care about the specific form and interpretability of the function $f$, as long as it provides accurate predictions. In these settings, we denote the predicted sales as $\hat{Y}$ and the predicted function as $\hat{f}$.</span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>Importantly, the accuracy of the prediction $Y$ with respect to the prediction $\hat Y$ depends on two quantities: (i) the *irreducible error*, and (ii) the *reducible* error.</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>By definition, the reducible error can be decreased by improving $\hat f$. However, since $Y$ is also a function of $\epsilon \sim \mathcal{N}(0, \sigma^2)$ and $E(\epsilon \mid X) = 0$; we cannot *perfectly* estimate $Y$ with $\hat Y$.</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>To illustrate this, let us consider the *fixed* set of predictors $X$ with the model $\hat Y = \hat{f}(X)$ and we further suppose that $\hat f$ is also fixed. Then, we have:</span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>E\left<span class="co">[</span><span class="ot">(Y-\hat{Y})^2\right</span><span class="co">]</span></span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">\left(f(X)+\epsilon-\hat{f}(X)\right)^2\right</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>&amp;= E\left[</span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>    (f(X)-\hat{f}(X))^2</span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>\epsilon^2</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="ss">    + </span>2\epsilon(f(X)-\hat{f}(X))</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>\right] <span class="sc">\\</span></span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>&amp;= E\left<span class="co">[</span><span class="ot">(f(X)-\hat{f}(X))^2\right</span><span class="co">]</span></span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="ss">   + </span>E<span class="co">[</span><span class="ot">\epsilon^2</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>&amp;=</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>\underbrace{(f(X)-\hat f(X))^2}_{\text{reducible error}}</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>+</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>\underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible error}}</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a>since the cross product is $0$ because $E<span class="co">[</span><span class="ot">\epsilon (f(X) - \hat{f(X)})</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">E[\epsilon (f(X) - \hat{f(X)}) \mid X</span><span class="co">]</span> = 0$ by definition of the error term. The core techniques we will learn aim to estimate $f$ while minimizing the reducible error.</span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Inference</span></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>*Inference* is a completely different paradigm. It focuses on *understanding* the association between $Y$ and $X_1, \cdots, X_p$. Here, we estimate $f$ but our goal is to estimate as precisely as possible $Y$. The educated reader will notice that the science focused on developing these interpretable models is Econometrics. The types of model we select and the assumptions we formulate vary based on our goal: prediction or inference.</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a><span class="fu">### How Do We Estimate $f$?</span></span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>When estimating $f$, we will always assume that we used $n$ *training data* points.</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>I rely on the same notation as @james2023 and we let $x_{i, j}$ denotes the $j$-th predictor (among the $p$ predictors we have), or input, for observation $i$; so we have $i \in <span class="sc">\{</span>1, \cdots, n<span class="sc">\}</span>$ and $j \in <span class="sc">\{</span>1, \cdots, p<span class="sc">\}</span>$.</span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>Correspondingly, we have $y_i$ representing the response variable for the $i$-th observation.</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>Now, among the different function $\hat{f}$ we can estimate, we can typically classify them as either (i) *parametric*, and (ii) *non-parametric*.</span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Parametric Methods</span></span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a>when we opt for a parametric approach, this means that first we select a model. For instance, a *linear model* such as:</span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + (\cdots) + \beta_p X_p</span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a>Now, instead of having to estimate an arbitrary $p$-dimensional function, we simply need to estimate the $p + 1$ $\beta_k$ coefficients. Selecting the method to use our $n$ training instances to *fit* or *train* our model is the second step. For instance, ordinary least squares (OLS) is a closed form solution to this optimization (we try to minimize the reducible error) problem. This linear model is referred to as *parametric* because it reduces the problem of estimating $f$ to estimating $p$ parameters.</span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a>Of course, if we select a model whose form is far off from the *true* $f$, we will obtain poor results. We could then increase the flexibility of our model but we expose ourselves to *overfitting* the training data, i.e. our model fits very well the $n$ training instances but generalize very poorly to unseen data.</span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Non-Parametric Methods</span></span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a>For non-parametric methods, no assumption about the form of $f$ is made, so the risk of selecting a faulty functional form is gone.</span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a>However, typically, since we do not *reduce* our optimization problem, the number of training instances needed to obtain a precise estimation of $f$ is much larger.</span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a>Splines, discussed further in this summary, are an example of non-parametric methods.</span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a><span class="fu">### Supervised Versus Unsupervised Learning</span></span>
+<span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a>TO BE WRITTEN (small overview and dicussion, one visual example with generated data for clustering)</span>
+<span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-219"><a href="#cb4-219" aria-hidden="true" tabindex="-1"></a><span class="fu">### Regression Versus Classification</span></span>
+<span id="cb4-220"><a href="#cb4-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-221"><a href="#cb4-221" aria-hidden="true" tabindex="-1"></a>TO BE WRITTEN</span>
+<span id="cb4-222"><a href="#cb4-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Assessing Model Accuracy</span></span>
+<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a>Selecting the best approach can be one of the most challenging parts of performing statistical learning in</span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>practice because for any given dataset, we might have a different *optimal* technique to estimate $f$. Furthermore,</span>
+<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a>how do we determine which approach is the *best* for a given problem? This section explores this question.</span>
+<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a><span class="fu">### Measuring the Quality of Fit</span></span>
+<span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a>Measuring the quality of the fit, i.e. how well our estimated function $\hat{f}$ predicts $Y$, depends on the type of task we are tackling.</span>
+<span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a>In the regression settings, the most commonly-used measure is the *mean-squared error* (MSE), given by:</span>
+<span id="cb4-233"><a href="#cb4-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a>\text{MSE} = \frac{1}{n} \sum_{i = 1}^{n} (y_i - \hat{f}(x_i))^2</span>
+<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a>where $\hat{f}(x_i) = \hat y_i$ is the prediction given by $\hat f$ for the $i$-th observation.</span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>Typically, when training our model (used for a regression task) we seek to minimize the MSE; however,</span>
+<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a>we are measuring the MSE with our *training* data, hence the *training MSE* is not to be understood as a reliable metric</span>
+<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a>of our model's accuracy. To get that, we should use our model to predict unseen *test data*. Then the MSE will be more</span>
+<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a>informative and tells us how our model *really* perform. For instance, if we observe $MSE_{\text{test}} \gg MSE_{\text{training}}$,</span>
+<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a>this suggests that our model is overfitting the training data. Below, I generate a synthetic example to illustrate this.</span>
+<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Overfitting Training Data: A Synthetic Example</span></span>
+<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a>Let us consider a plausible regresssion problem whith one regressor variable $X$, representing the size of a flat in square meters, and $Y$ being the monthly rent in CHF. We build a model to create these data. Below is a snapshot of the resulting dataframe.</span>
+<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a><span class="co"># generate the data with the following model:</span></span>
+<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a><span class="co"># model: y = a + bX + e</span></span>
+<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a><span class="co"># (y: rent in CHF, x: flat size in square meters, e: error term / noise)</span></span>
+<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; X ~ N(80, 20^2)</span></span>
+<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; e ~ N(0, 300^2)</span></span>
+<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; a = 300, b = 25</span></span>
+<span id="cb4-259"><a href="#cb4-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-260"><a href="#cb4-260" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the seed for reproducibility</span></span>
+<span id="cb4-261"><a href="#cb4-261" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb4-262"><a href="#cb4-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-263"><a href="#cb4-263" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters</span></span>
+<span id="cb4-264"><a href="#cb4-264" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb4-265"><a href="#cb4-265" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb4-266"><a href="#cb4-266" aria-hidden="true" tabindex="-1"></a>X_std <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb4-267"><a href="#cb4-267" aria-hidden="true" tabindex="-1"></a>X_mean <span class="op">=</span> <span class="dv">80</span></span>
+<span id="cb4-268"><a href="#cb4-268" aria-hidden="true" tabindex="-1"></a>e_std <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb4-269"><a href="#cb4-269" aria-hidden="true" tabindex="-1"></a>e_mean <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-270"><a href="#cb4-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-271"><a href="#cb4-271" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the whole sample</span></span>
+<span id="cb4-272"><a href="#cb4-272" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb4-273"><a href="#cb4-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-274"><a href="#cb4-274" aria-hidden="true" tabindex="-1"></a><span class="co"># test and train sample sizes</span></span>
+<span id="cb4-275"><a href="#cb4-275" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.8</span> <span class="op">*</span> N)</span>
+<span id="cb4-276"><a href="#cb4-276" aria-hidden="true" tabindex="-1"></a>n_test <span class="op">=</span> <span class="fl">0.2</span> <span class="op">*</span> N</span>
+<span id="cb4-277"><a href="#cb4-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-278"><a href="#cb4-278" aria-hidden="true" tabindex="-1"></a><span class="co"># draw data for X and e</span></span>
+<span id="cb4-279"><a href="#cb4-279" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(loc<span class="op">=</span>X_mean, scale<span class="op">=</span><span class="dv">20</span>, size<span class="op">=</span>N)</span>
+<span id="cb4-280"><a href="#cb4-280" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> np.random.normal(loc<span class="op">=</span>e_mean, scale<span class="op">=</span>e_std, size<span class="op">=</span>N)</span>
+<span id="cb4-281"><a href="#cb4-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-282"><a href="#cb4-282" aria-hidden="true" tabindex="-1"></a><span class="co"># compute Y</span></span>
+<span id="cb4-283"><a href="#cb4-283" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> a <span class="op">+</span> b <span class="op">*</span> X <span class="op">+</span> e</span>
+<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a><span class="co"># data frame for whole sample</span></span>
+<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a>    <span class="st">"size"</span>: X,</span>
+<span id="cb4-289"><a href="#cb4-289" aria-hidden="true" tabindex="-1"></a>    <span class="st">"rent"</span>: Y</span>
+<span id="cb4-290"><a href="#cb4-290" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-291"><a href="#cb4-291" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a><span class="co"># split test and train set</span></span>
+<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a>df_train <span class="op">=</span> sample.iloc[:n_train].copy().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a>df_test <span class="op">=</span> sample.iloc[n_train:].copy().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-297"><a href="#cb4-297" aria-hidden="true" tabindex="-1"></a><span class="co"># head of the dataset</span></span>
+<span id="cb4-298"><a href="#cb4-298" aria-hidden="true" tabindex="-1"></a>df_train.head()</span>
+<span id="cb4-299"><a href="#cb4-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
